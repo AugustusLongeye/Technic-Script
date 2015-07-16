@@ -1,6 +1,6 @@
 class Null(object):
     from inspect import isclass
-    #test!
+    #test! TESTING!
     def __init__(self, *args, **kwargs):
         """Ignore parameters."""
         return None
