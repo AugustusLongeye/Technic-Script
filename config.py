@@ -2,7 +2,7 @@ class Config(object):
     
     from os import getcwd
     from exception import IllegalArgError
-    from exception import ConfigMissingError
+    from exception import ConfigAccessError
     
     kwargs = {}
     flags = []
@@ -14,11 +14,9 @@ class Config(object):
             with open(self.getcwd() + "/config.txt", "r") as config_file:
                 lines = [line.strip() for line in config_file]
         except IOError as e:
-            raise ConfigMissingError(e)
+            raise self.ConfigAccessError(e)
         for line in lines:
-            for char in self.illegal_chars:
-                if char in line and "#" not in line:
-                    raise IllegalArgError(ch)
+            self.validate(line)
             if "#" in line:
                 clean_arg = ""
                 for char in line:
@@ -36,6 +34,23 @@ class Config(object):
                 self.flags.append(line)
             else:
                 pass
+    
+    def parse_args(self, args):
+        to_log = []
+        for arg in args:
+            self.validate(arg)
+        for arg in args:
+            arg.lower()
+            arg.strip("\"")
+            if "=" in arg:
+                key, value = arg.split("=")
+                self.kwargs[key] = value
+                to_log += "- kwarg {0}:{1} added".format(key, value),         
+            elif "-" in arg:
+                arg = arg.strip("-")
+                self.flags.append(arg)
+                to_log += "- arg {0} added".format(arg)
+        return to_log
                 
     def get_value(self, key):
         if key in self.kwargs:
@@ -54,6 +69,14 @@ class Config(object):
             return True
         else:
             return False
+    
+    def validate(self, arg):
+        if '#' in arg:
+            return True
+        for char in self.illegal_chars:
+            if char in arg:
+                raise self.IllegalArgError(char, arg)
+        return True
     
     def print_state(self, log):
         log("===================")

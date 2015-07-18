@@ -25,7 +25,7 @@ class ModuleMissingError(SuperException):
         return("Module {0} missing! Reinstall script!"
                .format(self.values[0]))
     
-class ConfigMissingError(SuperException):
+class ConfigAccessError(SuperException):
     #[0] is exception
     def __str__(self):
         web_address=""#TODO add config file path on github
