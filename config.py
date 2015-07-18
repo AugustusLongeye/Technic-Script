@@ -4,6 +4,7 @@ class Config(object):
     from exception import IllegalArgError
     from exception import ConfigAccessError
     
+    extra_args_added = False
     kwargs = {}
     flags = []
     illegal_chars = ";*?<>|()\"\'"
@@ -36,6 +37,7 @@ class Config(object):
                 pass
     
     def parse_args(self, args):
+        self.extra_args_added = True
         to_log = []
         for arg in args:
             self.validate(arg)
@@ -82,6 +84,8 @@ class Config(object):
         log("===================")
         log("Config Module - Start Dump")
         log("Module loaded, config.txt read.")
+        if self.extra_args_added:
+            log("Additionals args added after config load")
         log("-----")
         log("KWARGS: ")
         for key, value in self.kwargs.items():

@@ -33,3 +33,12 @@ class ConfigAccessError(SuperException):
                "If config file present, check permissions! \n"
                "See exception for more details: \n{1}"
                .format(web_address, self.values[0]))
+    
+class InvalidPathError(SuperException):
+    #[0] is path
+    #[1] is exception
+    def __str__(self):
+        return("Path {0} Invalid, check path exists and "
+               "script has permissions to access it! \n"
+               "See Exception for more details: \m{1}"
+               .format(self.values[0], self.values[1]))
