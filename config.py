@@ -1,4 +1,21 @@
 class Config(object):
+    """
+    Read and store config data from a config.txt file
+    
+    Reads data from a config.txt file,
+    parses and catches illegal chars. Once
+    data processed will store in kwargs and
+    flags variables.
+    
+    Can be passed additional list of args
+    (such as command line) which are added
+    to kwargs and flags as needed.
+    
+    Will always raise IllegalArgError if
+    illegal character found. Will look for
+    config.txt in same dir, will raise
+    ConfigAccessError if not found.
+    """
     
     from os import getcwd
     from exception import IllegalArgError
@@ -10,6 +27,14 @@ class Config(object):
     illegal_chars = ";*?<>|()\"\'"
     
     def __init__(self):
+        """
+        Open config file and parse content.
+        Assign kwargs & flags as appropreate, 
+        stripping ", - and comments.
+        
+        Raise IllegalArgError if any illegal
+        characters found.
+        """
         lines = ""
         try:
             with open(self.getcwd() + "/config.txt", "r") as config_file:
@@ -37,6 +62,14 @@ class Config(object):
                 pass
     
     def parse_args(self, args):
+        """
+        Parse and overwrite/create  kwargs & args
+        as necessary to kwargs and flags. Return 
+        full log of all args added.
+        
+        Raise IllegalArgError if any illegal
+        characters found.
+        """
         self.extra_args_added = True
         to_log = []
         for arg in args:
@@ -55,24 +88,44 @@ class Config(object):
         return to_log
                 
     def get_value(self, key):
+        """
+        Return value of given key or false
+        if key not found.
+        """
         if key in self.kwargs:
             return self.kwargs[key]
         else:
             return False
         
     def set_flag(self, flag):
+        """
+        Set a given flag to return True
+        """
         self.flags.append(flag)
         
     def set_config_value(self, key, value):
+        """
+        Set a given kwarg to value
+        """
         self.kwargs[key] = value
 
     def flag_present(self, flag):
+        """
+        Return True if flag present
+        or False if not
+        """
         if flag in self.flags:
             return True
         else:
             return False
     
     def validate(self, arg):
+        """
+        Test given string for illegal character.
+        
+        Raise IllegalArgError if any illegal
+        characters found.
+        """
         if '#' in arg:
             return True
         for char in self.illegal_chars:
@@ -80,23 +133,30 @@ class Config(object):
                 raise self.IllegalArgError(char, arg)
         return True
     
-    def print_state(self, log):
-        log("===================")
-        log("Config Module - Start Dump")
-        log("Module loaded, config.txt read.")
+    def print_state(self):
+        """
+        Return list of data associated with file:
+        Current KWARGS & FLAGS, if extra args added
+        after init, with formatting.
+        """
+        to_log = []
+        to_log += "==================="
+        to_log += "Config Module - Start Dump"
+        to_log += "Module loaded, config.txt read."
         if self.extra_args_added:
-            log("Additionals args added after config load")
-        log("-----")
-        log("KWARGS: ")
+            to_log += "Additional args added after config load"
+        to_log += "-----"
+        to_log += "KWARGS: "
         for key, value in self.kwargs.items():
-            log("{0}: {1}".format(key, value))
-        log("-----")
+            to_log += "{0}: {1}".format(key, value)
+        to_log += "-----"
         if self.flags:
-            log("FLAGS: ")
+            to_log += "FLAGS: "
             for flag in self.flags:
-                log(flag)
+                to_log += flag
         else:
-            log("No Flags found.")
-        log("-----")
-        log("Config Module - End Dump")
-        log("===================")
+            to_log += "No Flags found."
+        to_log += "-----"
+        to_log += "Config Module - End Dump"
+        to_log += "==================="
+        return to_log
