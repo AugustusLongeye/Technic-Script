@@ -13,6 +13,7 @@ class Folder(object):
     """
     
     import os
+    import shutil
     from exceptions import IllegalArgError
     from exceptions import InvalidPathError
 
@@ -31,16 +32,16 @@ class Folder(object):
                 raise IllegalArgError(char, path)
         self.path = path
 
-    def touch(self, path):
+    def touch(self):
         """
         Test path location is read/writeable.
         
         Raise InvalidPathError if not.
         """
         try:
-            self.os.makedirs(path)
+            self.os.makedirs(self.path)
         except OSError as e:
-            if not self.os.path.isdir(path):
+            if not self.os.path.isdir(self.path):
                 raise self.InvalidPathError(path, e)
         else:
             return True
@@ -115,12 +116,31 @@ class Folder(object):
         #overwright/rename
         
     def zip(self, name, dst=None):
-        #zip contents of self to name.zip
-        #if no dst provided, place zip in self
+        """
+        Zip self.path contents into name.zip.
+        If dst is a path, zip file will be put there.
+        Else zip will be put in self.path.
+        """
+        if not dst:
+            name = self.path + name
+        else:
+            name = dst + name
+        os.chdir(self.path)
+        shutil.make_archive(name, "zip", self.path)
         
-    def wipe(self, recursive=True):
-        #remove contents of self
-        #if recursive true remove all folders
+    def wipe(self, reinit=True):
+        """
+        Wipe self, removes all contents recursively.
+        
+        Optional "reinit=True" param to retouch the
+        folder when finished.
+        """
+        shutil.rmtree(self.path, ignore_errors = True)
+        if reinit:
+            try:
+                return self.touch()
+            except InvalidPathError as e
+                raise e
         
     def sync(self, dst):
         #only copy changed/no present contents
