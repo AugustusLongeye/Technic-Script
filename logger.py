@@ -13,6 +13,7 @@ class Logger(object):
     """
     
     from os import getcwd
+    from datetime import datetime as time
     
     level = {"silent":0,
              "quiet":1,
@@ -51,7 +52,8 @@ class Logger(object):
         self.script_location = self.getcwd
         self.__call__("Script location: {0}".format(self.script_location),
                       self.level["debug"])
-        self.__log_file = self.script_location + "/log.txt"
+        now = self.time.now().strftime("%Y-%m-%d_%H.%M.%s")
+        self.__log_file = self.script_location + "/log.{0}.txt".format(now)
     
     def __call__(self, message = "", level=level["normal"]):
         """
@@ -117,7 +119,12 @@ class Logger(object):
             self.__stack.append("EXCEPTION: " + exception)
         self.__call__("Stack saved to " + self.__log_file, 
                       self.level["silent"])
-        self.dump_stack(out="file")
+        if self.__bulk_write:
+            self.dump_stack(out="file")
+        else:
+            self.__write(message)
+            if exception:
+                self.__write(exception)
 
     def dump_stack(self, out="file"):
         """
@@ -132,12 +139,6 @@ class Logger(object):
         if out is "terminal":
             print(self.__stack)
         if out is "file":
-            from datetime import datetime as time
-            now = time.now().strftime("%Y-%m-%d_%H.%M.%s")
-            if path:
-                path = path + "dump.{0}.txt".format(now)
-            else:
-                path = script_location + "dump.{0}.txt".format(now)
             try:
                 with open(self.__log_file, "w") as file:
                     for line in self.__stack:
