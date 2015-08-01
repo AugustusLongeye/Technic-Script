@@ -93,7 +93,7 @@ class Logger(object):
         To write bulk data use _bulk_write
         """
         with open(self.__log_file, "w") as log_file:
-            pass
+            log_file.write(message)
         
     def __bulk_write(self):
         """
