@@ -64,7 +64,7 @@ class ConfigAccessError(Error):
         Formatted string of original exception
         and web address.
         """
-        web_address=""#TODO add config file path on github
+        web_address="https://github.com/AugustusLongeye/Technic-Script-2/blob/master/config.txt"
         return("Config file missing. \nRedownload from {0}. \n"
                "If config file present, check permissions! \n"
                "See exception for more details: \n{1}"

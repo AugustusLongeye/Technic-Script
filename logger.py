@@ -29,7 +29,7 @@ class Logger(object):
     __log_file = ""
     
     def __init__(self, current_level = 2, output="terminal",
-                 output_style="live"):
+                 output_style=None):
         """
         Set params, get location of self.
         
@@ -44,8 +44,12 @@ class Logger(object):
         """
         if output == "file":
             self.__to_file = True
+            if not output_style:
+                self.__bulk_log = True
         if output_style == "bulk":
             self.__bulk_log = True
+        elif not output_style:
+            self.__bulk_log = False
         self.__current_log_level = current_level
         self.__call__("Logger initialised.", self.level["debug"])
         self.__call__("Logger level set at Debug", self.level["debug"])
@@ -60,6 +64,9 @@ class Logger(object):
         Log when message level is LOWER 
         than global logging level. Also 
         add all messages to stack.
+        
+        Log strings as single line, log
+        iterables on one line per iteration.
         """
         if not message:
             return
@@ -137,7 +144,8 @@ class Logger(object):
         file.
         """
         if out is "terminal":
-            print(self.__stack)
+            for line in self.__stack:
+                print(self.__stack)
         if out is "file":
             try:
                 with open(self.__log_file, "w") as file:

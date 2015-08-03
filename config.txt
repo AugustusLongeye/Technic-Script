@@ -1,0 +1,64 @@
+##########################################################
+#  _______  _______  _        _______ _________ _______  #
+# (  ____ \(  ___  )( (    /|(  ____ \\__   __/(  ____ \ #
+# | (    \/| (   ) ||  \  ( || (    \/   ) (   | (    \/ #
+# | |      | |   | ||   \ | || (__       | |   | |       #
+# | |      | |   | || (\ \) ||  __)      | |   | | ____  #
+# | |      | |   | || | \   || (         | |   | | \_  ) #
+# | (____/\| (___) || )  \  || )      ___) (___| (___) | #
+# (_______/(_______)|/    )_)|/       \_______/(_______) #
+#                                                        #
+##########################################################
+# Config file for script! All values can be edited, any
+# Extra values will be ignored, missing values will throw
+# Errors. All leading and trailing whitespace is trimmed.
+##########################################################
+# PATHS:
+#   - All paths must be valid!
+#   - Must terminate in a / (or one will be added!)
+#   - Must follow format name:path
+#   - Can contain spaces, but must use "" if they do!
+#   - Cannot contain any of ;*?<>|()\"\' except for
+#      quotations marks wrapping path.
+
+    # Directory minecraft_server.jar located in.
+    minecraft_dir:/home/Minecraft/McMyAdmin/Minecraft/
+    
+    # Directory technic will access for pack.zip
+    web_dir:/var/www/html/
+    
+    # Directory to put backups in.Directory
+    backup_dir:/home/Minecraft/pack_backups/
+    
+    # Directory with all master folders.
+    master_dir:/home/Minecraft/Master_Pack/
+
+##########################################################
+# NAMES:
+#   - Names can contain spaces, but must be wrapped in
+#      quotation marks.
+#   - Names cannot contain any of ;*?<>|()\"\' except
+#      for quotations wrapping names.
+
+    # Pack name!
+    pack_name:BrassBlocks
+    
+    # Backup name, use {0} to indicate where to put date.
+    # If no date needed, leave out. Will put archive 
+    # filetype at end, do not add.
+    backup_name:Packup.{0} #Puns!
+    
+    # Master folder names, if you need to change them.
+    master_mods:"Master Mods"
+    master_config:"Master Config"
+    master_bin:"Master Bin"
+    master_client_mods:"Master Client Mods"
+    
+##########################################################
+# FLAGS:
+#   - Command line flags can be set here to be run every
+#      time.
+#   - Flags should be on one line each, and as you would
+#      enter them on the command line, for example:
+#-no-backup
+

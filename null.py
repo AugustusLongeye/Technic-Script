@@ -1,4 +1,11 @@
 class Null(object):
+    """
+    Object is Null.
+    
+    Object will accept all params, calls,
+    and supports most builtin behaviour.
+    Will always return None.
+    """
     from inspect import isclass
     
     def __init__(self, *args, **kwargs):
