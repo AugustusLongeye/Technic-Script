@@ -53,7 +53,7 @@ class Logger(object):
         self.__current_log_level = current_level
         self.__call__("Logger initialised.", self.level["debug"])
         self.__call__("Logger level set at Debug", self.level["debug"])
-        self.script_location = self.getcwd
+        self.script_location = self.getcwd()
         self.__call__("Script location: {0}".format(self.script_location),
                       self.level["debug"])
         now = self.time.now().strftime("%Y-%m-%d_%H.%M.%s")

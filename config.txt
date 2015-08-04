@@ -55,6 +55,14 @@
 ##########################################################
 # MISC:
 
+    # Log level:
+    # 1 = Silent
+    # 2 = Quiet
+    # 3 = Standard
+    # 4 = Verbose
+    # 5 = Debug (prints EVERYTHING)
+        log_level=3
+
     # Log location, to screen or to file!
         log_location:screen
     
