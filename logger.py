@@ -28,7 +28,7 @@ class Logger(object):
     __bulk_log = False
     __log_file = ""
     
-    def __init__(self, current_level = 2, output="terminal",
+    def __init__(self, current_level = 2, output="screen",
                  output_style=None):
         """
         Set params, get location of self.
@@ -36,7 +36,7 @@ class Logger(object):
         current_level can be 0 for no logging, up
         to 4 for debug logging.
         
-        output is terminal or file.
+        output is screen or file.
         
         output_style can be live or bulk. Live
         will print in real time, bulk will wait
@@ -72,7 +72,7 @@ class Logger(object):
             return
         if hasattr(message, "__iter__"):
         # Will intentionally fail for str, only want to iter
-        # on lists or the like, not strings.
+        # on lists or the like, not strings. Not 
             for line in message:
                 self.__call__(message, level)
         self.__stack.append(message)

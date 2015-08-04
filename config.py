@@ -20,11 +20,13 @@ class Config(object):
     from os import getcwd
     from exception import IllegalArgError
     from exception import ConfigAccessError
-    
+    from exception import MissingConfigError
+
     extra_args_added = False
     kwargs = {}
     flags = []
     illegal_chars = ";*?<>|()\"\'"
+    config_file_web_path  = "https://github.com/AugustusLongeye/Technic-Script-2/blob/master/config.txt"
     
     def __init__(self):
         """
@@ -40,8 +42,9 @@ class Config(object):
             with open(self.getcwd() + "/config.txt", "r") as config_file:
                 lines = [line.strip() for line in config_file]
         except IOError as e:
-            raise self.ConfigAccessError(e)
+            raise self.ConfigAccessError(e, config_file_web_path)
         for line in lines:
+            line.strip("\"")
             self.validate(line)
             if "#" in line:
                 clean_arg = ""
@@ -54,10 +57,10 @@ class Config(object):
                 lines.append(clean_arg)
             elif ":" in line:
                 key, value = line.split(":")
-                self.kwargs[key] = value
+                self.kwargs[key.strip()] = value.strip()
             elif "-" in line:
                 line.strip("-")
-                self.flags.append(line)
+                self.flags.append(line.strip())
             else:
                 pass
     
@@ -80,11 +83,11 @@ class Config(object):
             if "=" in arg:
                 key, value = arg.split("=")
                 self.kwargs[key] = value
-                to_log += "- kwarg {0}:{1} added".format(key, value),         
+                to_log.append("- kwarg {0}:{1} added".format(key, value))        
             elif "-" in arg:
                 arg = arg.strip("-")
                 self.flags.append(arg)
-                to_log += "- arg {0} added".format(arg)
+                to_log.append("- arg {0} added".format(arg))
         return to_log
                 
     def get_value(self, key):
@@ -95,7 +98,7 @@ class Config(object):
         if key in self.kwargs:
             return self.kwargs[key]
         else:
-            return False
+            raise MissingConfigError(key, self.config_file_web_path)
         
     def set_flag(self, flag):
         """
@@ -140,23 +143,23 @@ class Config(object):
         after init, with formatting.
         """
         to_log = []
-        to_log += "==================="
-        to_log += "Config Module - Start Dump"
-        to_log += "Module loaded, config.txt read."
+        to_log.append("===================")
+        to_log.append("Config Module - Start Dump")
+        to_log.append("Module loaded, config.txt read.")
         if self.extra_args_added:
-            to_log += "Additional args added after config load"
-        to_log += "-----"
-        to_log += "KWARGS: "
+            to_log.append("Additional args added after config load")
+        to_log.append("-----")
+        to_log.append("KWARGS: ")
         for key, value in self.kwargs.items():
-            to_log += "{0}: {1}".format(key, value)
-        to_log += "-----"
+            to_log.append("{0}: {1}".format(key, value))
+        to_log.append("-----")
         if self.flags:
-            to_log += "FLAGS: "
+            to_log.append("FLAGS: ")
             for flag in self.flags:
-                to_log += flag
+                to_log.append(flag)
         else:
-            to_log += "No Flags found."
-        to_log += "-----"
-        to_log += "Config Module - End Dump"
-        to_log += "==================="
+            to_log.append("No Flags found.")
+        to_log.append("-----")
+        to_log.append("Config Module - End Dump")
+        to_log.append("===================")
         return to_log

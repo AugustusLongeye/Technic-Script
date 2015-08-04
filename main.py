@@ -5,11 +5,14 @@ from logger import Logger
 from os import getcwd
 
 # Globals
-path = {}
 working_dir = getcwd()
 config = Config()
-log = Logger(working_dir)
-log.set_current_level(log.level[config.get_value("log_level")])
+log = Logger(working_dir,
+             config.get_value("log_level"),
+             config.get_value("log_location"),
+             config.get_value("output_style"),
+            )
+
 
 # Debug logging
 log("Working Directory: " + working_dir, log.level["debug"])
@@ -22,12 +25,13 @@ for value in config.flags:
 
 # Initialize paths
 for key, value in config.kwargs.items():
-    if "directory" in key:
+    if "dir" in key:
         path[key] = Path(value, log)
         
 master_subdirs = {"mods":config.get_value("master_mods"),
                   "client_mods":config.get_value("master_client_mods"),
                   "config":config.get_value("master_config"),
-                  "bin":config.get_value("master_bin")}
+                  "bin":config.get_value("master_bin"),
+                 }
 path["master_directory"].add_subdirs(master_subdirs)
 

@@ -10,50 +10,62 @@
 #                                                        #
 ##########################################################
 # Config file for script! All values can be edited, any
-# Extra values will be ignored, missing values will throw
-# Errors. All leading and trailing whitespace is trimmed.
+# extra values will be ignored, missing values will throw
+# errors. All leading and trailing whitespace is trimmed.
+# Everything after a # is a comment, and will be ignored!
 ##########################################################
 # PATHS:
 #   - All paths must be valid!
 #   - Must terminate in a / (or one will be added!)
 #   - Must follow format name:path
-#   - Can contain spaces, but must use "" if they do!
-#   - Cannot contain any of ;*?<>|()\"\' except for
-#      quotations marks wrapping path.
+#   - Can contain spaces
+#   - Cannot contain any of ;*?<>|()\"\'
 
     # Directory minecraft_server.jar located in.
-    minecraft_dir:/home/Minecraft/McMyAdmin/Minecraft/
+        minecraft_dir:/home/Minecraft/McMyAdmin/Minecraft/
     
     # Directory technic will access for pack.zip
-    web_dir:/var/www/html/
+        web_dir:/var/www/html/
     
     # Directory to put backups in.Directory
-    backup_dir:/home/Minecraft/pack_backups/
+        backup_dir:/home/Minecraft/pack_backups/
     
     # Directory with all master folders.
-    master_dir:/home/Minecraft/Master_Pack/
+        master_dir:/home/Minecraft/Master_Pack/
 
 ##########################################################
 # NAMES:
-#   - Names can contain spaces, but must be wrapped in
-#      quotation marks.
-#   - Names cannot contain any of ;*?<>|()\"\' except
-#      for quotations wrapping names.
+#   - Names can contain spaces
+#   - Names cannot contain any of ;*?<>|()\"\'
 
     # Pack name!
-    pack_name:BrassBlocks
+        pack_name:BrassBlocks
     
     # Backup name, use {0} to indicate where to put date.
     # If no date needed, leave out. Will put archive 
     # filetype at end, do not add.
-    backup_name:Packup.{0} #Puns!
+        backup_name:Packup.{0} #Puns!
     
     # Master folder names, if you need to change them.
-    master_mods:"Master Mods"
-    master_config:"Master Config"
-    master_bin:"Master Bin"
-    master_client_mods:"Master Client Mods"
+        master_mods:Master Mods
+        master_config:Master Config
+        master_bin:Master Bin
+        master_client_mods:Master Client Mods
+
+##########################################################
+# MISC:
+
+    # Log location, to screen or to file!
+        log_location:screen
     
+    # Should log send line by line, or all at once?
+    #  Values are "bulk" or "live". Suggest "bulk" if
+    #  writing to a file.
+        output_style:live
+        
+    # Unimplemented as of yet.
+        first_run:False
+
 ##########################################################
 # FLAGS:
 #   - Command line flags can be set here to be run every

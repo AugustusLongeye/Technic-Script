@@ -57,18 +57,33 @@ class ConfigAccessError(Error):
     informaton including link to GitHub config.txt
     and reminder to check i/o permissions.
     
-    ConfigAccesssError(exception)
+    ConfigAccesssError(exception, config_web_path)
     """
     def __str__(self):
         """
         Formatted string of original exception
         and web address.
         """
-        web_address="https://github.com/AugustusLongeye/Technic-Script-2/blob/master/config.txt"
         return("Config file missing. \nRedownload from {0}. \n"
                "If config file present, check permissions! \n"
                "See exception for more details: \n{1}"
-               .format(web_address, self.values[0]))
+               .format(self.values[1], self.values[0]))
+    
+class MissingConfigError(Error):
+    """
+    Raised when config value requested but not
+    found in config dict.
+    
+    MissingConfigError(key, config_web_path)
+    """
+    def __str__(self):
+        """
+        Formatted string of key.
+        """
+        return("Config value missing, please check config file.\n"
+               "Can download new config file from {0}\n"
+               "Missing values is {1}."
+               .format(self.values[1], self.values[0]))
     
 class InvalidPathError(Error):
     """
@@ -83,5 +98,5 @@ class InvalidPathError(Error):
         """
         return("Path {0} Invalid, check path exists and "
                "script has permissions to access it! \n"
-               "See Exception for more details: \m{1}"
+               "See Exception for more details: \n{1}"
                .format(self.values[0], self.values[1]))
