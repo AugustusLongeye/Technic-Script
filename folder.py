@@ -129,8 +129,10 @@ class Folder(object):
             archive_loc = self.path + archive_name
         else:
             archive_loc = dst + archive_name
+        origin_dir = self.os.getcwd()
         self.os.chdir(self.path)
         self.shutil.make_archive(archive_loc, "zip", self.path)
+        self.os.chdir(origin_dir)
         
     def wipe(self, reinit=True):
         """

@@ -60,7 +60,8 @@
     # 2 = Quiet
     # 3 = Standard
     # 4 = Verbose
-    # 5 = Debug (prints EVERYTHING)
+    # 5 = Debug (prints EVERYTHING, ideally used with
+      a file to provide me with debug information)
         log_level=3
 
     # Log location, to screen or to file!
