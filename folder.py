@@ -60,14 +60,16 @@ class Folder(object):
         """
         Add single subdirectory to subdirs list.
         """
-        self.subdirs[key] = self.path + value
+        if self.touch(self.path + value)
+            self.subdirs[key] = self.path + value
     
     def add_subdirs(self, subdirs):
         """
         Add list of subdirectories to subdirs list.
         """
         for key, value in subdirs.items():
-            self.subdirs[key] = self.path + value
+            if self.touch(self.path + value)
+                self.subdirs[key] = self.path + value
     
     def __call__(self):
         """
@@ -93,18 +95,24 @@ class Folder(object):
         elif isinstance(other, str):
             return Folder(self.path + other,
                            subdirs=self.subdirs)
+        else:
+            raise TypeError("Type not supported./r"
+                            "Only types Str and Folder are supported to adding.\r"
+                            "Try using add_subdir or add_subdirs instead.")
     
     # Methods to alter content
-    def copy(self, dst, log=True):
+    def copy(self, subdir=None, dst, log=True):
         """
         Copy contents of self to dst recursively.
         If log, return list of files copied.
         """
-        to_log = self.dir_util.copy_tree(repr(self), dst)
+        if subdir:
+            path = self.subdir["subdir"]
+        else if not subdir:
+            path = self.path
+        to_log = self.dir_util.copy_tree(path, dst)
         if log:
             return to_log
-        else:
-            return
 
     def move(self, dst, log=True):
         """
@@ -116,8 +124,6 @@ class Folder(object):
         self.wipe()
         if log:
             return to_log
-        else:
-            return
         
     def zip(self, archive_name, dst=None):
         """
@@ -134,17 +140,31 @@ class Folder(object):
         self.shutil.make_archive(archive_loc, "zip", self.path)
         self.os.chdir(origin_dir)
         
-    def wipe(self, reinit=True):
+    def wipe(self, reinit=True, path=None):
         """
         Wipe self, removes all contents recursively.
         If reinit, retouch path when done.
         """
+        if path is None:
+            paht = self.path
         self.shutil.rmtree(self.path, ignore_errors = True)
         if reinit:
             try:
                 return self.touch()
-            except InvalidPathError as e:
-                raise e
+            except InvalidPathError:
+                raise
+                
+    def wipe_subdirs(self, reinit=True):
+        """
+        Wipe subdirs of self, remove all contents.
+        If reinit will touch each subdir when done.
+        Will not wipe contents of self, only subdirs.
+        """
+        for key, value in self.subdirs.iteritems():
+            try:
+                self.wipe(path=value reinit=reinit)
+            except InvalidPathError:
+                raise
     
     # Representation Methods
     def print_state(self):

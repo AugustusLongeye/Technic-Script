@@ -56,13 +56,15 @@
 # MISC:
 
     # Log level:
-    # 1 = Silent
-    # 2 = Quiet
-    # 3 = Standard
-    # 4 = Verbose
-    # 5 = Debug (prints EVERYTHING, ideally used with
-      a file to provide me with debug information)
-        log_level=3
+    # silent - Will log nothing
+    # quiet - Will only log reminders
+    # normal - Will log progress of program
+    # verbose - Will log output of all commands
+    # debug - Will log EVERYTHING, including
+    #         creating a dump of all object
+    #         properties. Suggest to use with
+    #         output_style:file
+        log_level=debug
 
     # Log location, to screen or to file!
         log_location:screen

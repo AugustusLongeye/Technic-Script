@@ -20,6 +20,7 @@ class Logger(object):
              "normal":2,
              "verbose":3,
              "debug":4}
+    __str_level = ["silent", "quiet", "normal", "verbose", "debug"]
     
     __current_log_level = ""
     script_location = ""
@@ -56,8 +57,8 @@ class Logger(object):
         self.script_location = self.getcwd()
         self.__call__("Script location: {0}".format(self.script_location),
                       self.level["debug"])
-        now = self.time.now().strftime("%Y-%m-%d_%H.%M.%s")
-        self.__log_file = self.script_location + "/log.{0}.txt".format(now)
+        self.__log_file = (self.script_location + 
+                           "/log.{0}.txt".format(self.now()))
     
     def __call__(self, message = "", level=level["normal"]):
         """
@@ -115,7 +116,10 @@ class Logger(object):
         with open(self.__log_file, "w") as log_file:
             for line in self.__stack:
                 log_file.write(line)
-            
+    
+    def now(self):
+        return self.time.now().strftime("%Y-%m-%d_%H.%M.%s")
+    
     def error(self, message, exception=""):
         """
         Log exception and dumps current
@@ -151,11 +155,18 @@ class Logger(object):
                 with open(self.__log_file, "w") as file:
                     for line in self.__stack:
                         file.write(line + "\n")
-            except IOError as e:
-                raise e
+            except IOError:
+                raise
                     
     def set_log_level(self, level):
         """
         Set logger's current log level.
         """
         self.__current_log_level = level
+        
+    def get_log_level(self):
+        """
+        Return list of numerical & string level.
+        """
+        return [self.__log_level, 
+                self.__str_level[self.__log_level]]
