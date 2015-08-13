@@ -118,6 +118,9 @@ class Logger(object):
                 log_file.write(line)
     
     def now(self):
+        """
+        Return formatted datetime at point of call.
+        """
         return self.time.now().strftime("%Y-%m-%d_%H.%M.%s")
     
     def error(self, message, exception=""):
