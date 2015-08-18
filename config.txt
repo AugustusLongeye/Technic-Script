@@ -64,7 +64,7 @@
     #         creating a dump of all object
     #         properties. Suggest to use with
     #         output_style:file
-        log_level=debug
+        log_level:normal
 
     # Log location, to screen or to file!
         log_location:screen

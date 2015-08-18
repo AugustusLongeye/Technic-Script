@@ -29,7 +29,7 @@ class Logger(object):
     __bulk_log = False
     __log_file = ""
     
-    def __init__(self, current_level = 2, output="screen",
+    def __init__(self, current_level="normal", output="screen",
                  output_style=None):
         """
         Set params, get location of self.
@@ -51,14 +51,14 @@ class Logger(object):
             self.__bulk_log = True
         elif not output_style:
             self.__bulk_log = False
-        self.__current_log_level = current_level
-        self.__call__("Logger initialised.", self.level["debug"])
-        self.__call__("Logger level set at Debug", self.level["debug"])
+        self.__current_log_level = self.__str_level.index(current_level)
         self.script_location = self.getcwd()
-        self.__call__("Script location: {0}".format(self.script_location),
-                      self.level["debug"])
         self.__log_file = (self.script_location + 
                            "/log.{0}.txt".format(self.now()))
+        self.__call__("Logger initialised.", self.level["debug"])
+        self.__call__("Logger level set at " + current_level)
+        self.__call__("Script location: {0}".format(self.script_location),
+                      self.level["debug"])
     
     def __call__(self, message = "", level=level["normal"]):
         """
@@ -71,18 +71,19 @@ class Logger(object):
         """
         if not message:
             return
-        if hasattr(message, "__iter__"):
-        # Will intentionally fail for str, only want to iter
-        # on lists or the like, not strings. Not 
+        if type(message) is list:
             for line in message:
-                self.__call__(message, level)
-        self.__stack.append(message)
-        if level <= self.__current_log_level:
-            if not self.__bulk_log:
-                if self.__to_file:
-                    self.__write(message)
-                else:
-                    print(message)
+                self.__call__(line, level)
+            return
+        else:
+            self.__stack.append(message)
+            if level <= self.__current_log_level:
+                if not self.__bulk_log:
+                    if self.__to_file:
+                        self.__write(message)
+                    else:
+                        print(message)
+            return
             
     def log(*args, **kwargs):
         """
@@ -102,8 +103,9 @@ class Logger(object):
         
         To write bulk data use _bulk_write
         """
-        with open(self.__log_file, "w") as log_file:
+        with open(self.__log_file, "a") as log_file:
             log_file.write(message)
+            log_file.write("\r")
         
     def __bulk_write(self):
         """
@@ -171,5 +173,5 @@ class Logger(object):
         """
         Return list of numerical & string level.
         """
-        return [self.__log_level, 
-                self.__str_level[self.__log_level]]
+        return [self.__current_log_level, 
+                self.__str_level[self.__current_log_level]]

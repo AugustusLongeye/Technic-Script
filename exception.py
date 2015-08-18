@@ -100,3 +100,17 @@ class InvalidPathError(Error):
                "script has permissions to access it! \n"
                "See Exception for more details: \n{1}"
                .format(self.values[0], self.values[1]))
+    
+class NoDstError(Error):
+    """
+    Exception to raise when no destination
+    provided by calling body. Is not very
+    helpful, as exceptions go.
+    
+    NoDstError()
+    """
+    
+    def __str__(self):
+        return("No destination passed as arg, this "
+               "error should never be seen. Please "
+               "cry for help now.")

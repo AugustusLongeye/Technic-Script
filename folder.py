@@ -14,19 +14,23 @@ class Folder(object):
     from distutils import dir_util
     from exception import IllegalArgError
     from exception import InvalidPathError
+    from exception import NoDstError
 
     path = None
     subdirs = {}
     __illegal_chars = ";*?<>|()\"\'"
+    __name = ""
     __last_err = None
     
-    def __init__(self, path):
+    def __init__(self, path, name=None):
         """
         Set path var, check for illegal chars,
         touch path to varify access rights.
         
         Raise InvalidPathError if no access.
         """
+        if name:
+            self.__name = name
         for char in self.__illegal_chars:
             if char in path:
                 raise IllegalArgError(char, path)
@@ -60,7 +64,7 @@ class Folder(object):
         """
         Add single subdirectory to subdirs list.
         """
-        if self.touch(self.path + value)
+        if self.touch(self.path + value):
             self.subdirs[key] = self.path + value
     
     def add_subdirs(self, subdirs):
@@ -68,7 +72,7 @@ class Folder(object):
         Add list of subdirectories to subdirs list.
         """
         for key, value in subdirs.items():
-            if self.touch(self.path + value)
+            if self.touch(self.path + value):
                 self.subdirs[key] = self.path + value
     
     def __call__(self):
@@ -101,14 +105,16 @@ class Folder(object):
                             "Try using add_subdir or add_subdirs instead.")
     
     # Methods to alter content
-    def copy(self, subdir=None, dst, log=True):
+    def copy(self, dst=None, subdir=None, log=True):
         """
         Copy contents of self to dst recursively.
         If log, return list of files copied.
         """
+        if not dst:
+            raise NoDstError()
         if subdir:
-            path = self.subdir["subdir"]
-        else if not subdir:
+            path = self.subdirs["subdir"]
+        elif not subdir:
             path = self.path
         to_log = self.dir_util.copy_tree(path, dst)
         if log:
@@ -162,7 +168,7 @@ class Folder(object):
         """
         for key, value in self.subdirs.iteritems():
             try:
-                self.wipe(path=value reinit=reinit)
+                self.wipe(path=value, reinit=reinit)
             except InvalidPathError:
                 raise
     
@@ -173,25 +179,29 @@ class Folder(object):
         Includes main path and any subdirs.
         """
         to_log = []
-        to_log += "==================="
-        to_log += "Folder Instance {0} - Start Dump".format(self.path)
-        to_log += "Module loaded, path initialised"
-        to_log += "-----"
-        to_log += "Path created with location {0}".format(self.path)
-        to_log += "-----"
-        if subdirs:
-            to_log += "Loaded Sub-Directories: "
-            for key, value in self.subdirs.items():
-                to_log += "{0}: {1}".format(key, value)
+        to_log.append("===================")
+        if self.__name:
+            to_log.append("Folder Instance {0} - Start Dump".format(self.__name))
         else:
-            to_log += "No Sub-Directories found."
-        to_log += "-----"
-        if not __last_err:
-            to_log += "Last Error:"
-            to_log += self.__last_err
-        to_log += "-----"
-        to_log += "Folder Instance- End Dump"
-        to_log += "==================="
+            to_log.append("Folder Instance {0} - Start Dump".format(self.path))
+        to_log.append("Module loaded, path initialised")
+        to_log.append("-----")
+        to_log.append("Path created with location {0}".format(self.path))
+        to_log.append("-----")
+        if self.subdirs:
+            to_log.append("Loaded Sub-Directories: ")
+            for key, value in self.subdirs.items():
+                to_log.append("{0}: {1}".format(key, value))
+            to_log.append("-----")
+        else:
+            to_log.append("No Sub-Directories found.")
+            to_log.append("-----")
+        if self.__last_err:
+            to_log.append("Last Error:")
+            to_log.append(self.__last_err)
+            to_log.append("-----")
+        to_log.append("Folder Instance- End Dump")
+        to_log.append("===================")
         return to_log      
    
     def __str__(self):

@@ -27,6 +27,8 @@ class Config(object):
     flags = []
     illegal_chars = ";*?<>|()\"\'"
     config_file_web_path  = "https://github.com/AugustusLongeye/Technic-Script-2/blob/master/config.txt"
+    #__config_name = "/config.txt"
+    __config_name = "/testfig.txt"
     
     def __init__(self):
         """
@@ -39,10 +41,10 @@ class Config(object):
         """
         lines = ""
         try:
-            with open(self.getcwd() + "/config.txt", "r") as config_file:
+            with open(self.getcwd() + self.__config_name, "r") as config_file:
                 lines = [line.strip() for line in config_file]
         except IOError as e:
-            raise self.ConfigAccessError(e, config_file_web_path)
+            raise self.ConfigAccessError(e, self.config_file_web_path)
         for line in lines:
             line.strip("\"")
             self.validate(line)
@@ -98,7 +100,7 @@ class Config(object):
         if key in self.kwargs:
             return self.kwargs[key]
         else:
-            raise MissingConfigError(key, self.config_file_web_path)
+            raise self.MissingConfigError(key, self.config_file_web_path)
         
     def set_flag(self, flag):
         """
@@ -112,7 +114,7 @@ class Config(object):
         """
         self.kwargs[key] = value
 
-    def flag_present(self, flag):
+    def get_flag(self, flag):
         """
         Return True if flag present
         or False if not
