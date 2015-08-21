@@ -23,11 +23,9 @@ working_dir.add_subdirs({"bin":"bin",
 def init():
     log("Initialising folders.....")
     
-    for key, value in config.kwargs.items():
+    for key in config.kwargs:
         if "dir" in key:
-            if "master" in key:
-                conti
-            folder[key] = Folder(value, name=key)
+            folder[key] = Folder(config.kwargs[key], name=key)
 
     folder["master_dir"].add_subdirs({
                 "mods":config.get_value("master_mods"),

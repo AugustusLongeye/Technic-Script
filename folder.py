@@ -166,9 +166,9 @@ class Folder(object):
         If reinit will touch each subdir when done.
         Will not wipe contents of self, only subdirs.
         """
-        for key, value in self.subdirs.iteritems():
+        for key in self.subdirs:
             try:
-                self.wipe(path=value, reinit=reinit)
+                self.wipe(path=self.subdirs[key], reinit=reinit)
             except InvalidPathError:
                 raise
     
