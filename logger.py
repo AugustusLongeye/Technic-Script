@@ -28,6 +28,7 @@ class Logger(object):
     __to_file = False
     __bulk_log = False
     __log_file = ""
+    __log_format = "log"
     
     def __init__(self, current_level="normal", output="screen",
                  output_style=None):
@@ -54,7 +55,7 @@ class Logger(object):
         self.__current_log_level = self.__str_level.index(current_level)
         self.script_location = self.getcwd()
         self.__log_file = (self.script_location + 
-                           "/log.{0}.txt".format(self.now()))
+                           "/log.{0}.{1}".format(self.now(), self.__log_format))
         self.__call__("Logger initialised.", self.level["debug"])
         self.__call__("Logger level set at " + current_level)
         self.__call__("Script location: {0}".format(self.script_location),
