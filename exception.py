@@ -14,8 +14,8 @@ class Error(Exception):
         Return list of all values.
         """
         ret_val = []
-        for value in values:
-            ret_val += value
+        for value in self.values:
+            ret_val.append(value)
         return ret_val
     
     def __repr__(self):

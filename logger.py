@@ -105,7 +105,7 @@ class Logger(object):
         To write bulk data use _bulk_write
         """
         with open(self.__log_file, "a") as log_file:
-            log_file.write(message)
+            log_file.write(str(message))
             log_file.write("\r")
         
     def __bulk_write(self):
@@ -131,9 +131,9 @@ class Logger(object):
         Log exception and dumps current
         stack to file.
         """
-        self.__stack.append("ERROR: " + message)
+        self.__stack.append("ERROR: " + str(message))
         if exception:
-            self.__stack.append("EXCEPTION: " + exception)
+            self.__stack.append("EXCEPTION: " + str(exception))
         self.__call__("Stack saved to " + self.__log_file, 
                       self.level["silent"])
         if self.__bulk_write:

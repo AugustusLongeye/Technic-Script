@@ -43,14 +43,14 @@ class Null(object):
         """Return only other"""
         return other
     def __sub__(self, other):
-        """Return only other"""
-        return other
+        """Return negative other"""
+        return -other
     def __radd__(self, other):
         """Return only other"""
         return other
     def __rsub__(self, other):
-        """Return only other"""
-        return other
+        """Return negative other"""
+        return -other
     def __cmp__(self, other):
         """Only return True if other is Null"""
         if isinstance(self, type(other)):

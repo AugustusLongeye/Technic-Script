@@ -6,6 +6,7 @@ import exception
 import shutil
 from os import getcwd
 from sys import argv
+from null import Null
 
 
 # Inits
@@ -14,27 +15,46 @@ config.parse_args(argv)
 log = Logger(current_level = config.get_value("log_level"),
              output = config.get_value("log_location"),
              output_style = config.get_value("output_style"))
-folder = {}
-working_dir = Folder(getcwd()+"/working_dir")
-working_dir.add_subdirs({"bin":"bin", 
-                         "config":"config", 
-                         "mods":"mods"})
+master_dir = Null()
+working_dir = Null()
+server_dir = Null()
+web_dir = Null()
+backup_dir = Null()
+folders = []
 
 def init():
     log("Initialising folders.....")
     
-    for key in config.kwargs:
-        if "dir" in key:
-            folder[key] = Folder(config.kwargs[key], name=key)
-
-    folder["master_dir"].add_subdirs({
-                "mods":config.get_value("master_mods"),
-                "client_mods":config.get_value("master_client_mods"),
-                "config":config.get_value("master_config"),
-                "bin":config.get_value("master_bin")})
-    folder["minecraft_dir"].add_subdirs({
-                "mods":"mods",
-                "config":"config"})
+    global master_dir, working_dir, server_dir, web_dir, backup_dir
+    global folders
+    
+    master_dir, working_dir, server_dir, web_dir, backup_dir
+    
+    working_dir = Folder(getcwd()+"/working_dir",
+                         name = "Working Directory")
+    working_dir.add_subdirs({"bin":"bin", 
+                             "config":"config", 
+                             "mods":"mods"})
+    
+    master_dir = Folder(config.get_value("master_dir"),
+                        name = "Master Directory")
+    master_dir.add_subdirs({
+            "mods":config.get_value("master_mods"),
+            "client_mods":config.get_value("master_client_mods"),
+            "config":config.get_value("master_config"),
+            "bin":config.get_value("master_bin")})
+    minecraft_dir = Folder(config.get_value("minecraft_dir"),
+                           name = "Server Directory")
+    minecraft_dir.add_subdirs({
+            "mods":"mods",
+            "config":"config"})
+    web_dir = Folder(config.get_value("web_dir"),
+                     name = "Web Directory")
+    backup_dir = Folder(config.get_value("backup_dir"), 
+                        name = "Backup Directory")
+    
+    folders = [master_dir, working_dir, server_dir, web_dir, backup_dir]
+    
     log("Done!")
     
     if config.get_flag("no-backup"):
@@ -43,7 +63,7 @@ def init():
 def debug_log():
     log("Working Directory: " + str(working_dir), log.level["debug"])
     log(config.print_state(), log.level["debug"])
-    for key, val in folder.iteritems():
+    for val in folders:
         log(val.print_state(), log.level["debug"])
 
 
@@ -57,45 +77,43 @@ def backup():
     else:
         backup_name = config.get_value("backup_name")
         
-    shutil.move(folder["web_dir"] + config.get_value("pack_name"),
-         folder["backup_dir"] + backup_name)
-    log("Pack moved to " + folder["backup_dir"] + backup_name,
+    shutil.move(web_dir + config.get_value("pack_name"),
+                backup_dir + backup_name)
+    log("Pack moved to " + backup_dir + backup_name,
         log.level["verbose"])
     
     log("Done!")
 
 def purge():
     log("Clearing up old files.....")
-    folder["minecraft_dir"].wipe_subdirs()
+    minecraft_dir.wipe_subdirs()
     working_dir.wipe()
     log("Done!")
 
 def sync():
     log("Copying files to server.....")
 
-    log(folder["master_dir"].copy(subdir="mods", 
-                                  dst=folder["minecraft_dir"]
-                                      .subdirs["mods"]),
+    log(master_dir.copy(subdir="mods", 
+                        dst=minecraft_dir.subdirs["mods"]),
         log.level["verbose"])
-    log(folder["master_dir"].copy(subdir="config", 
-                                  dst=folder["minecraft_dir"]
-                                      .subdirs["config"]),
+    log(master_dir.copy(subdir="config", 
+                        dst=minecraft_dir.subdirs["config"]),
         log.level["verbose"])
     
     log("Done!")
     log("Copying files to client.....")
     
-    log(folder["master_dir"].copy(subdir="mods",
-                                  dst=working_dir.subdirs["mods"]),
+    log(master_dir.copy(subdir="mods",
+                        dst=working_dir.subdirs["mods"]),
         log.level["verbose"])
-    log(folder["master_dir"].copy(subdir="client_mods",
-                                  dst=working_dir.subdirs["mods"]),
+    log(master_dir.copy(subdir="client_mods",
+                        dst=working_dir.subdirs["mods"]),
         log.level["verbose"])
-    log(folder["master_dir"].copy(subdir="config",
-                                  dst=working_dir.subdirs["config"]),
+    log(master_dir.copy(subdir="config",
+                        dst=working_dir.subdirs["config"]),
         log.level["verbose"])
-    log(folder["master_dir"].copy(subdir="bin",
-                                  dst=working_dir.subdirs["bin"]),
+    log(master_dir.copy(subdir="bin",
+                        dst=working_dir.subdirs["bin"]),
         log.level["verbose"])
     
     log("Done!")
@@ -111,7 +129,7 @@ def move_pack():
     log("Moving zip to web directory.....")
     
     shutil.move(working_dir() + config.get_value("pack_name") + ".zip", 
-         folder["web_dir"])
+                web_dir)
     
     log("Done!")
 
