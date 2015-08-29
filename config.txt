@@ -22,7 +22,7 @@
 #   - Cannot contain any of ;*?<>|()\"\'
 
     # Directory minecraft_server.jar located in.
-        minecraft_dir:/home/Minecraft/McMyAdmin/Minecraft/
+        server_dir:/home/Minecraft/McMyAdmin/Minecraft/
     
     # Directory technic will access for pack.zip
         web_dir:/var/www/html/

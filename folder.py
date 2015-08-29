@@ -16,11 +16,8 @@ class Folder(object):
     from exception import InvalidPathError
     from exception import NoDstError
 
-    path = None
-    subdirs = {}
     __illegal_chars = ";*?<>|()\"\'"
-    __name = ""
-    __last_err = None
+
     
     def __init__(self, path, name=None):
         """
@@ -29,8 +26,12 @@ class Folder(object):
         
         Raise InvalidPathError if no access.
         """
+        self.subdirs = {}
+        self.__last_err = None
         if name:
             self.__name = name
+        else:
+            self.__name = path
         for char in self.__illegal_chars:
             if char in path:
                 raise IllegalArgError(char, path)
@@ -64,16 +65,16 @@ class Folder(object):
         """
         Add single subdirectory to subdirs list.
         """
-        if self.touch(self.path + value):
-            self.subdirs[key] = self.path + value
+        if self.touch(self.path + value + "/"):
+            self.subdirs[key] = self.path + value + "/"
     
     def add_subdirs(self, subdirs):
         """
         Add list of subdirectories to subdirs list.
         """
         for key, value in subdirs.items():
-            if self.touch(self.path + value):
-                self.subdirs[key] = self.path + value
+            if self.touch(self.path + value + "/"):
+                self.subdirs[key] = self.path + value + "/"
     
     def __call__(self):
         """
@@ -84,26 +85,15 @@ class Folder(object):
     def __add__(self, other):
         """
         Add other to self.
-        
-        If other is valid folder object return new
-        Folder with other.path appended to self.path,
-        and other.subdirs appended to self.subdirs.
-        
-        If other is valid string, return new Folder
-        with str appended to self.path, and same subdirs
-        as self.subdirs.
+
+        If other is valid string, return String
+        with str appended to self.path.
         """
-        if isinstance(other, type(self)):
-            return Folder(self.path + other.path,
-                           subdirs=self.subdirs.update(other.subdirs))
-        elif isinstance(other, str):
-            return Folder(self.path + other,
-                           subdirs=self.subdirs)
-        else:
-            raise TypeError("Type not supported./r"
-                            "Only types Str and Folder are supported to adding.\r"
-                            "Try using add_subdir or add_subdirs instead.")
-    
+        try:
+            return self.path + other
+        except Exception as e:
+            raise e
+            
     # Methods to alter content
     def copy(self, dst=None, subdir=None, log=True):
         """
@@ -113,7 +103,7 @@ class Folder(object):
         if not dst:
             raise NoDstError()
         if subdir:
-            path = self.subdirs["subdir"]
+            path = self.subdirs[subdir]
         elif not subdir:
             path = self.path
         to_log = self.dir_util.copy_tree(path, dst)

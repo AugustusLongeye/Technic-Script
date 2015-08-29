@@ -43,9 +43,9 @@ def init():
             "client_mods":config.get_value("master_client_mods"),
             "config":config.get_value("master_config"),
             "bin":config.get_value("master_bin")})
-    minecraft_dir = Folder(config.get_value("minecraft_dir"),
+    server_dir = Folder(config.get_value("server_dir"),
                            name = "Server Directory")
-    minecraft_dir.add_subdirs({
+    server_dir.add_subdirs({
             "mods":"mods",
             "config":"config"})
     web_dir = Folder(config.get_value("web_dir"),
@@ -73,31 +73,41 @@ def backup():
     
     backup_name = ""
     if "{" in config.get_value("backup_name"):
-        backup_name = config.get_value("backup_name").format(log.now)
+        backup_name = config.get_value("backup_name").format(log.now())
     else:
         backup_name = config.get_value("backup_name")
-        
-    shutil.move(web_dir + config.get_value("pack_name"),
-                backup_dir + backup_name)
-    log("Pack moved to " + backup_dir + backup_name,
-        log.level["verbose"])
-    
+    backup_name += ".zip"
+    try:    
+        shutil.move(web_dir + config.get_value("pack_name") + ".zip",
+                    backup_dir + backup_name)
+        log("Pack moved to " + str(backup_dir) + backup_name,
+            log.level["verbose"])
+    except IOError as e:
+        # if the file doesn't exist, pass.
+        if e.errno is 2:
+            log("No file to backup, skipping!")
+            pass
+        else:
+            raise e
+            
     log("Done!")
 
 def purge():
     log("Clearing up old files.....")
-    minecraft_dir.wipe_subdirs()
+    
+    server_dir.wipe_subdirs()
     working_dir.wipe()
+    
     log("Done!")
 
 def sync():
     log("Copying files to server.....")
 
     log(master_dir.copy(subdir="mods", 
-                        dst=minecraft_dir.subdirs["mods"]),
+                        dst=server_dir.subdirs["mods"]),
         log.level["verbose"])
     log(master_dir.copy(subdir="config", 
-                        dst=minecraft_dir.subdirs["config"]),
+                        dst=server_dir.subdirs["config"]),
         log.level["verbose"])
     
     log("Done!")
@@ -128,7 +138,7 @@ def zip_pack():
 def move_pack():
     log("Moving zip to web directory.....")
     
-    shutil.move(working_dir() + config.get_value("pack_name") + ".zip", 
+    shutil.move(working_dir + config.get_value("pack_name") + ".zip", 
                 web_dir)
     
     log("Done!")
@@ -147,11 +157,11 @@ command_chain=[backup, purge, sync, zip_pack, move_pack, clean_up]
 if __name__ == "__main__":
     try:
         init()
-        if debug in log.get_log_level():
+        if "debug" in log.get_log_level():
             debug_log()
         for command in command_chain:
             command()
-    except Error as e:
+    except exception.Error as e:
         #Catch all custom errors, ignore all else.
         if "debug" in log.get_log_level():
             raise
