@@ -1,10 +1,10 @@
 class Null(object):
     """
-    Object is Null.
+    Object is a Gentle Null.
     
     Object will accept all params, calls,
     and supports most builtin behaviour.
-    Will always return None.
+    Will always return None or absorb call.
     """
     from inspect import isclass
     
