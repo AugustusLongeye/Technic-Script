@@ -6,7 +6,6 @@ import exception
 import shutil
 from os import getcwd
 from sys import argv
-from null import Null
 
 
 # Inits
@@ -15,11 +14,12 @@ config.parse_args(argv)
 log = Logger(current_level = config.get_value("log_level"),
              output = config.get_value("log_location"),
              output_style = config.get_value("output_style"))
-master_dir = Null()
-working_dir = Null()
-server_dir = Null()
-web_dir = Null()
-backup_dir = Null()
+# Directorys are global, if not initialised lots of exceptions!
+master_dir = 0
+working_dir = 0
+server_dir = 0
+web_dir = 0
+backup_dir = 0
 folders = []
 
 def init():
