@@ -145,8 +145,8 @@ class Folder(object):
         If reinit, retouch path when done.
         """
         if path is None:
-            paht = self.path
-        self.shutil.rmtree(self.path, ignore_errors = True)
+            path = self.path
+        self.shutil.rmtree(path, ignore_errors = True)
         if reinit:
             try:
                 return self.touch()

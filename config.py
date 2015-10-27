@@ -27,8 +27,7 @@ class Config(object):
     flags = []
     illegal_chars = ";*?<>|()\"\'"
     config_file_web_path  = "https://github.com/AugustusLongeye/Technic-Script-2/blob/master/config.txt"
-    #__config_name = "/config.txt"
-    __config_name = "/testfig.txt"
+    __config_name = "/config.txt"
     
     def __init__(self):
         """

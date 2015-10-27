@@ -145,7 +145,7 @@ def move_pack():
     log("Moving zip to web directory.....")
     
     shutil.move(working_dir + config.get_value("pack_name") + ".zip", 
-                web_dir)
+                str(web_dir))
     
     log("Done!")
 
