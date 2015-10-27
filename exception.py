@@ -2,7 +2,6 @@ class Error(Exception):
     """
     Base Error for custom exceptions.
     """
-    
     def __init__(self, *values):
         """
         Store own values
@@ -48,8 +47,9 @@ class ModuleMissingError(Error):
         """
         Returns formatted strong of module name.
         """
-        return("Module {0} missing! Reinstall script!"
-               .format(self.values[0]))
+        import sys
+        mod = str(self.sys.exc_info()[1])[16:]
+        return("Module {0} missing! Reinstall script!", mod)
     
 class ConfigAccessError(Error):
     """

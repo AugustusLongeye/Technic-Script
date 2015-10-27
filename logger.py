@@ -5,7 +5,7 @@ class Logger(object):
     Accepts messages by direct calling,
     prints all messages to terminal and
     saves copy to stack. If passed an
-    exception or requested will dump
+    exception or if requested will dump
     stack to file/terminal and exit.
     
     Supports silent, quiet, normal,
@@ -13,7 +13,7 @@ class Logger(object):
     """
     
     from os import getcwd
-    from datetime import datetime as time
+    from time import gmtime, strftime
     
     level = {"silent":0,
              "quiet":1,
@@ -21,16 +21,16 @@ class Logger(object):
              "verbose":3,
              "debug":4}
     __str_level = ["silent", "quiet", "normal", "verbose", "debug"]
-    
-    __current_log_level = ""
+   
     script_location = ""
+    __current_log_level = ""
     __stack = []
     __to_file = False
     __bulk_log = False
     __log_file = ""
     __log_format = "log"
     
-    def __init__(self, current_level="normal", output="screen",
+    def __init__(self, current_level="normal", output_loc="screen",
                  output_style=None):
         """
         Set params, get location of self.
@@ -44,7 +44,7 @@ class Logger(object):
         will print in real time, bulk will wait
         until termination and print all content.
         """
-        if output == "file":
+        if output_loc == "file":
             self.__to_file = True
             if not output_style:
                 self.__bulk_log = True
@@ -55,7 +55,8 @@ class Logger(object):
         self.__current_log_level = self.__str_level.index(current_level)
         self.script_location = self.getcwd()
         self.__log_file = (self.script_location + 
-                           "/log.{0}.{1}".format(self.now(), self.__log_format))
+                           "/log.{0}.{1}".format(self.now(), 
+                                                 self.__log_format))
         self.__call__("Logger initialised.", self.level["debug"])
         self.__call__("Logger level set at " + current_level)
         self.__call__("Script location: {0}".format(self.script_location),
@@ -113,7 +114,7 @@ class Logger(object):
         Write list to file as single bulk.
         
         Accept list and print line-by-line.
-        Used to shutn IO time to end of script
+        Used to shunt IO time to end of script
         rather than during runtime.
         """
         with open(self.__log_file, "w") as log_file:
@@ -124,7 +125,7 @@ class Logger(object):
         """
         Return formatted datetime at point of call.
         """
-        return self.time.now().strftime("%Y-%m-%d_%H.%M.%s")
+        return self.strftime("%Y-%b-%d_%H.%M.%S", self.gmtime())
     
     def error(self, message, exception=""):
         """
@@ -155,7 +156,7 @@ class Logger(object):
         """
         if out is "terminal":
             for line in self.__stack:
-                print(self.__stack)
+                print(line)
         if out is "file":
             try:
                 with open(self.__log_file, "w") as file:

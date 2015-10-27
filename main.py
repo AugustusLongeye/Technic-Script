@@ -1,34 +1,36 @@
 # Imports
-from folder import Folder
-from config import Config
-from logger import Logger
-from harsh_null import Null
 import exception
 import shutil
 from os import getcwd
 from sys import argv
+
+try:
+    from folder import Folder
+    from config import Config
+    from logger import Logger
+    from harsh_null import Null
+except ImportError as e:
+    raise exception.ModuleMissingError(e)
 
 
 # Inits
 config = Config()
 config.parse_args(argv)
 log = Logger(current_level = config.get_value("log_level"),
-             output = config.get_value("log_location"),
+             output_loc = config.get_value("log_location"),
              output_style = config.get_value("output_style"))
 master_dir = Null()
 working_dir = Null()
 server_dir = Null()
 web_dir = Null()
 backup_dir = Null()
-folders = []
+folders = Null()
 
 def init():
     log("Initialising folders.....")
     
     global master_dir, working_dir, server_dir, web_dir, backup_dir
     global folders
-    
-    master_dir, working_dir, server_dir, web_dir, backup_dir
     
     working_dir = Folder(getcwd()+"/working_dir",
                          name = "Working Directory")
@@ -43,13 +45,16 @@ def init():
             "client_mods":config.get_value("master_client_mods"),
             "config":config.get_value("master_config"),
             "bin":config.get_value("master_bin")})
+    
     server_dir = Folder(config.get_value("server_dir"),
                            name = "Server Directory")
     server_dir.add_subdirs({
             "mods":"mods",
             "config":"config"})
+    
     web_dir = Folder(config.get_value("web_dir"),
                      name = "Web Directory")
+    
     backup_dir = Folder(config.get_value("backup_dir"), 
                         name = "Backup Directory")
     
@@ -77,6 +82,7 @@ def backup():
     else:
         backup_name = config.get_value("backup_name")
     backup_name += ".zip"
+    
     try:    
         shutil.move(web_dir + config.get_value("pack_name") + ".zip",
                     backup_dir + backup_name)

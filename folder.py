@@ -58,6 +58,8 @@ class Folder(object):
         except OSError as e:
             if not self.os.path.isdir(path):
                 raise self.InvalidPathError(path, e)
+            else:
+                return True
         else:
             return True
     
@@ -65,22 +67,23 @@ class Folder(object):
         """
         Add single subdirectory to subdirs list.
         """
-        if self.touch(self.path + value + "/"):
-            self.subdirs[key] = self.path + value + "/"
+        if not value.endswith("/"):
+            value += "/"
+        if self.touch(self.path + value):
+            self.subdirs[key] = self.path + value
     
     def add_subdirs(self, subdirs):
         """
         Add list of subdirectories to subdirs list.
         """
         for key, value in subdirs.items():
-            if self.touch(self.path + value + "/"):
-                self.subdirs[key] = self.path + value + "/"
+            self.add_subdir(key, value)
     
     def __call__(self):
         """
         Call Folder instance to return self.path as string.
         """
-        return self.path
+        return str(self.path)
     
     def __add__(self, other):
         """
@@ -190,18 +193,18 @@ class Folder(object):
             to_log.append("Last Error:")
             to_log.append(self.__last_err)
             to_log.append("-----")
-        to_log.append("Folder Instance- End Dump")
+        to_log.append("Folder Instance - End Dump")
         to_log.append("===================")
         return to_log      
-   
+
     def __str__(self):
-        return self.path
+        return str(self.path)
     
     def __repr__(self):
-        return self.path
+        return str(self.path)
     
     def __unicode__(self):
-        return self.path
+        return str(self.path)
     
     def __bool__(self):
         try:
